@@ -18,6 +18,13 @@
     onchange="updateAngle(this.value);">
     <span id="aVal"></span>
     <br/>
+    
+    <!--This is the slider that controls the height from where the projectile is projected   -->
+    <span>Height:</span> 
+    <input type="range" min="0" max="300" value="0" class="slider" id="height"
+    onchange="updateHeight(this.value);">
+    <span id="hVal"></span>
+    <br/>
     <input type="button" id="simulate" value="start">
     <div>
       <table >
