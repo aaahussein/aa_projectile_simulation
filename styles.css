@@ -1,0 +1,7 @@
+canvas {
+  display: block;
+}
+table, th, td{
+  border: 2px solid black;
+  margin: 10px;
+}
