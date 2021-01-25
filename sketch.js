@@ -54,10 +54,11 @@ function draw() {
                     y: line_start.y + line_length*line_direction.y}
     line(line_start.x, line_start.y, line_end.x, line_end.y);
     circle(line_start.x ,line_start.y, projectile_radius)  ;  
+    yMeasurement.innerText = h;
   }
   //draw a rectangle that gives visualization about projection height
   rect(0, canvas_Y-h, rect_width, h ) ;
-  yMeasurement.innerText = h;
+  
   
 }
 
