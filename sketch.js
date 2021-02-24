@@ -1,6 +1,6 @@
 //Constants
 const ay = 9.8; //(gravitational acceleration constat 9.8 m/s^2)
-const canvas_X = 400; //the canvas width
+const canvas_X = 800; //the canvas width
 const canvas_Y = 400; //the canvas height
 const projectile_radius = 10; //the radius of the ciircle representing the projectile
 const rect_width = 40;
@@ -10,7 +10,8 @@ let t = 0; //simulation time (gets incremented every frame after starting simula
 let v ; //velocity (gets its value from the velocity slider)
 let theta ; //angle (gets its value from the angle slider)
 let h; //the height (from where the projectile is projected)
-let fired = false; //when the start simulation button is clicked this value will be true until end of simulation
+let fired = false; //when the start simulation button is clicked this value will be true until pressing reset
+let simulating = false; //when the start simulation button is clicked this value will be true until projectile gets out of bound
 let xMeasurement = document.getElementById("xValue"); //the x-coordinate measurement in the table
 let yMeasurement = document.getElementById("yValue"); //the y-coordinate measurement in the table
 let vSlider = document.getElementById("velocity"); //the velocity slider element
@@ -24,11 +25,16 @@ function setup() {
   createCanvas(canvas_X, canvas_Y);
   document.getElementById("simulate").addEventListener("click", function(x){
     fired = true;
+    simulating = true;
+    
     //disable sliders while simulation
     vSlider.disabled = true;
     aSlider.disabled = true;
     hSlider.disabled = true;
   });
+  document.getElementById("resetSimulation").addEventListener("click", function(x) {
+    reset();
+  })
   updateVelocity(vSlider.value);
   updateAngle(aSlider.value);
   updateHeight(hSlider.value);
@@ -64,25 +70,46 @@ function draw() {
 
 //This function performs the projectile calculations, updates the x and y measuremens in the table
 function projectile(){
-  let vx_0 = v * Math.cos(theta);
-  let vy_0 = - v* Math.sin(theta) ; 
-  //the negative in the y because the pixel coordinates is inverted (the top has y=- and it increases downwards)
-
-  let x  = vx_0 * t;
-  let y =  vy_0 * t + 0.5 * ay * t * t + canvas_Y - h;
-  xMeasurement.innerText = Math.floor(x);
-  yMeasurement.innerText = Math.floor(canvas_Y - y); //400-y because the bottom left point has pixel coordinate of 400
+  let position = calculatePosition(t);
+  xMeasurement.innerText = Math.floor(position.x);
+  yMeasurement.innerText = Math.floor(canvas_Y - position.y); //400-y because the bottom left point has pixel coordinate of 400
   
   //if the projectile gets out of boundries then stop the simulation
-  if (y > canvas_Y || x > canvas_X){
-    stopSimulation();
+  if (position.y > canvas_Y || position.x > canvas_X
+    || position.y < 0 || position.x < 0){
+    stopSim();
   }
   //draw the projectile at the new calculated position
-  circle(x,y,projectile_radius);
-  t+= 0.05;  //increment time
+  circle(position.x,position.y,projectile_radius);
+
+  //draw points representing the path of the projectile
+  for(var step=0; step <= t; step+= 0.05){
+    let otherPos = calculatePosition(step);
+    point(otherPos.x, otherPos.y);
+  }
+  if(simulating){
+    t+= 0.05;  //increment time
+  }
+  
+  
 }
 
-function stopSimulation(){
+/**
+ * Calculate the x, y of a point in the canvas at a certain time
+ * @param {the time at which to calculate the position} time 
+ */
+function calculatePosition(time){
+  let vx_0 = v * Math.cos(theta);
+  let vy_0 = - v* Math.sin(theta);
+  //the negative in the y because the pixel coordinates is inverted (the top has y=- and it increases downwards)
+
+
+  let x  = vx_0 * time;
+  let y =  vy_0 * time + 0.5 * ay * time * time + canvas_Y - h;
+  return {x:x, y:y};
+}
+
+function reset(){
   t = 0;
   xMeasurement.innerText = 0;
   yMeasurement.innerText = 0;
@@ -90,6 +117,10 @@ function stopSimulation(){
   aSlider.disabled = false;
   hSlider.disabled = false;
   fired = false; 
+}
+
+function stopSim(){
+  simulating = false;
 }
 
 //To update velocity, angle and height labels (to display value of slider beside it)

@@ -1,7 +1,21 @@
+
 canvas {
   display: block;
 }
 table, th, td{
-  border: 2px solid black;
-  margin: 10px;
+  border: 1px solid #f5aa00;
+  margin: 5px;
+}
+table th {
+  background: #fefaf4;
+  color: #d08c22;
+}
+input[type="button"]{
+  background: #f5aa00;
+  color: white;
+  margin: 4px 2px 2px 2px;
+  padding: 8px 6px 8px 6px ;
+  border-radius: 2px;
+  border-color: white;
+  border-width: 5px;
 }
