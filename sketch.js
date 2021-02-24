@@ -133,3 +133,4 @@ function updateAngle(aVal){
 function updateHeight(hVal){
   document.getElementById("hVal").innerText = hVal;
 }
+
